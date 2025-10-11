@@ -7,11 +7,13 @@ import NoteForm from './NotesForm/NoteForm';
 import NotesGridView from './NotesGridView/NotesGridView';
 import NotesListView from './NotesListView/NotesListView';
 import NotesHeader from './NotesHeader/NotesHeader';
+import NotesQuery from './NotesQuery/NotesQuery';
 import PageContainer from '../Common/PageContainer/PageContainer';
 import ConfirmationDialog from './ConfirmationDialog/ConfirmationDialog';
 import Toast from '../Common/Toast/Toast';
 import Pagination from '../Common/Pagination/Pagination';
 import { useNotesSSE } from '../../hooks/useNotesSSE';
+import { hasDigitalOceanGradientAIEnabled } from '../../settings';
 
 // Create an instance of the ApiClient
 const apiClient = new NotesApiClient();
@@ -265,6 +267,13 @@ const MyNotes: React.FC = () => {
         onViewModeChange={setViewMode}
         onCreateNote={() => setIsCreateModalOpen(true)}
       />
+
+      {/* AI Query Component - only show if AI is enabled */}
+      {hasDigitalOceanGradientAIEnabled && (
+        <div style={{ marginBottom: '24px' }}>
+          <NotesQuery />
+        </div>
+      )}
 
       {/* Notes Display */}
       {viewMode === 'list' ? (

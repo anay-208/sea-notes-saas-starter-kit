@@ -72,6 +72,36 @@ export class DigitalOceanInferenceService {
   }
 
   /**
+   * Answer a query using provided context (for notes Q&A)
+   * @param query - The user's question
+   * @param context - The context from user's notes
+   * @returns Promise that resolves to the AI's answer
+   */
+  async answerWithContext(query: string, context: string): Promise<string> {
+    const systemPrompt = `You are a helpful assistant that answers questions about the user's personal notes. 
+
+Rules:
+- Only use information from the provided notes
+- If the answer isn't in the notes, say "I don't have that information in your notes"
+- Be concise and helpful
+- When referencing specific information, mention which note it came from
+- Format your response clearly`;
+
+    const messages = [
+      {
+        role: 'system' as const,
+        content: systemPrompt,
+      },
+      {
+        role: 'user' as const,
+        content: `Here are my notes:\n\n${context}\n\nQuestion: ${query}`,
+      },
+    ];
+
+    return this.makeCompletion(messages, { max_tokens: 500, temperature: 0.3 });
+  }
+
+  /**
    * Shared completion method for all AI operations
    * @param messages - The messages to send to the AI
    * @param options - Options for the completion
